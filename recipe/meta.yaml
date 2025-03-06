@@ -1,5 +1,5 @@
 {% set name = "simpleeval" %}
-{% set version = "0.9.13" %}
+{% set version = "1.0.3" %}
 
 package:
   name: {{ name|lower }}
@@ -7,30 +7,31 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 4a30f9cc01825fe4c719c785e3762623e350c4840d5e6855c2a8496baaa65fac
+  sha256: 67bbf246040ac3b57c29cf048657b9cf31d4e7b9d6659684daa08ca8f1e45829
 
 build:
   number: 0
-  script: {{ PYTHON }} -m pip install . -vv
+  script: {{ PYTHON }} -m pip install . -vv --no-build-isolation --no-deps
 
 requirements:
-  build:
-    - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-    - {{ compiler('c') }}
   host:
     - python
     - pip
+    - hatchling
   run:
     - python
 
 test:
+  source_files:
+    - test_simpleeval.py
   imports:
     - simpleeval
   commands:
     - pip check
+    - pytest -vv test_simpleeval.py
   requires:
     - pip
+    - pytest
 
 about:
   home: https://github.com/danthedeckie/simpleeval
